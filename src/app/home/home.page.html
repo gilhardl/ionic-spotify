@@ -1,14 +1,77 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>
-      Ionic Blank
+      Ionic Spotify
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
+    This app demonstrate how to use capacitor-spotify plugin in order to consume iOS and Android Spotify App
+    Remote SDKs from an Ionic/Capacitor app.
   </div>
+
+  <ion-list lines="none">
+    <ion-item >
+      <ion-text>
+        {{ initResult === undefined ? "Waiting for Spotify App Remote SDK initialization" : initResult ? 'Spotify App Remote SDK initialized' : 'Failed to initialize Spotify App Remote SDK' }}
+      </ion-text>
+    </ion-item>
+
+    <ion-item-divider></ion-item-divider>
+
+    <ion-item class="ion-text-center">
+      <ion-button
+        expand="full"
+        (click)="connectToAppRemote()"
+        [disabled]="!initResult || connectionResult"
+      >
+        Connect to Spotify App Remote
+      </ion-button>
+    </ion-item>
+    <ion-item *ngIf="connectionResult !== undefined">
+      <ion-text>
+        Result : {{ connectionResult ? 'Connected' : 'Connection error' }}
+      </ion-text>
+    </ion-item>
+
+    <ion-item-divider></ion-item-divider>
+
+    <ion-item class="ion-text-center">
+      <ion-button
+        expand="full"
+        (click)="disconnectFromAppRemote()"
+        [disabled]="!connectionResult || disconnectionResult"
+      >
+        Disconnect from Spotify App Remote
+      </ion-button>
+    </ion-item>
+    <ion-item *ngIf="disconnectionResult !== undefined">
+      <ion-text>
+        Result : {{ disconnectionResult ? 'Disconnnected' : 'Disconnection error' }}
+      </ion-text>
+    </ion-item>
+  </ion-list>
+
 </ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row class="ion-text-center">
+      <ion-col>
+        <ion-button [disabled]="!connectionResult || disconnectionResult || playerState === 'pending'" (click)="skipPrevious()"><ion-icon slot="icon-only" name="rewind"></ion-icon></ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button
+          [disabled]="!connectionResult || disconnectionResult"
+          (click)="playerState === 'pending' ? play(playlistURI) : (playerState === 'playing' ? pause() : resume())">
+          <ion-icon slot="icon-only" [name]="playerState === 'playing' ? 'pause' : 'play'"></ion-icon>
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button [disabled]="!connectionResult || disconnectionResult || playerState === 'pending'" (click)="skipNext()"><ion-icon slot="icon-only" name="fastforward"></ion-icon></ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>
