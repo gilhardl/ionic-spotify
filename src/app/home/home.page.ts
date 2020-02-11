@@ -45,8 +45,7 @@ export class HomePage implements OnInit, OnDestroy {
   private async initialize() {
     return SpotifySDK.initialize({
       clientId: SpotifyClientId,
-      redirectUri: SpotifyRedirectUri,
-      loginRequestCode: SpotifyLoginRequestCode
+      redirectUri: SpotifyRedirectUri
     })
       .then(res => {
         this.initResult = res.result;
