@@ -1,0 +1,8 @@
+{
+  "appId": "fr.gilhardl.ionicspotify",
+  "appName": "Ionic Spotify",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {}
+}
