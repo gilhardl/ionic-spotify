@@ -1,7 +1,9 @@
 include ':app'
 include ':capacitor-cordova-android-plugins'
 include ':spotify-app-remote'
+include ':spotify-auth'
 project(':capacitor-cordova-android-plugins').projectDir = new File('./capacitor-cordova-android-plugins/')
 project(':spotify-app-remote').projectDir = new File('../node_modules/capacitor-spotify/android/spotify-app-remote')
+project(':spotify-auth').projectDir = new File('../node_modules/capacitor-spotify/android/spotify-auth')
 
 apply from: 'capacitor.settings.gradle'

@@ -24,6 +24,40 @@
     <ion-item class="ion-text-center">
       <ion-button
         expand="full"
+        (click)="loginSpotify()"
+        [disabled]="!initResult || loginResult"
+      >
+        Log in Spotify
+      </ion-button>
+    </ion-item>
+    <ion-item *ngIf="loginResult !== undefined">
+      <ion-text>
+        Result : {{ loginResult ? 'Logged in' : 'Login error' }}
+      </ion-text>
+    </ion-item>
+
+    <ion-item-divider></ion-item-divider>
+
+    <ion-item class="ion-text-center">
+      <ion-button
+        expand="full"
+        (click)="logoutSpotify()"
+        [disabled]="!loginResult || logoutResult"
+      >
+        Log out Spotify
+      </ion-button>
+    </ion-item>
+    <ion-item *ngIf="logoutResult !== undefined">
+      <ion-text>
+        Result : {{ logoutResult ? 'Logged out' : 'Logout error' }}
+      </ion-text>
+    </ion-item>
+
+    <ion-item-divider></ion-item-divider>
+
+    <ion-item class="ion-text-center">
+      <ion-button
+        expand="full"
         (click)="connectToAppRemote()"
         [disabled]="!initResult || connectionResult"
       >

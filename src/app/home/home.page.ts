@@ -5,6 +5,7 @@ const { SpotifySDK } = Plugins;
 
 const SpotifyClientId = "545b895b07ea4310b33919989f43b709";
 const SpotifyRedirectUri = "fr.gilhardl.ionicspotify://callback";
+const SpotifyLoginRequestCode = 12345;
 
 @Component({
   selector: "app-home",
@@ -13,6 +14,8 @@ const SpotifyRedirectUri = "fr.gilhardl.ionicspotify://callback";
 })
 export class HomePage implements OnInit, OnDestroy {
   initResult;
+  loginResult;
+  logoutResult;
   connectionResult;
   disconnectionResult;
   playerState: "pending" | "playing" | "paused" = "pending";
@@ -22,16 +25,12 @@ export class HomePage implements OnInit, OnDestroy {
   private playerStateListener;
   private playerContextListener;
 
-  constructor() {
-    this.listenPlayerStateChanges();
-    this.listenPlayerContextChanges();
-  }
+  constructor() {}
 
   ngOnInit() {
-    this.initializeAppRemote().then(() => {
-      SpotifySDK.subscribeToPlayerState();
-      SpotifySDK.subscribeToPlayerContext();
-    });
+    this.initialize();
+    this.listenPlayerStateChanges();
+    this.listenPlayerContextChanges();
   }
 
   ngOnDestroy() {
@@ -43,17 +42,43 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
-  private async initializeAppRemote() {
-    return SpotifySDK.initializeAppRemote({
+  private async initialize() {
+    return SpotifySDK.initialize({
       clientId: SpotifyClientId,
-      redirectUri: SpotifyRedirectUri
+      redirectUri: SpotifyRedirectUri,
+      loginRequestCode: SpotifyLoginRequestCode
     })
       .then(res => {
         this.initResult = res.result;
       })
       .catch(err => {
-        console.error("Spotify App Remote SDK initialization failed :", err);
+        console.error("Spotify SDK initialization failed :", err);
         this.initResult = false;
+      });
+  }
+
+  loginSpotify() {
+    SpotifySDK.login()
+      .then(res => {
+        this.loginResult = true;
+        this.logoutResult = undefined;
+        console.log(res);
+      })
+      .catch(err => {
+        console.error("Spotify login connection failed :", err);
+        this.loginResult = false;
+      });
+  }
+
+  logoutSpotify() {
+    SpotifySDK.disconnectFromAppRemote()
+      .then(res => {
+        this.loginResult = undefined;
+        this.logoutResult = true;
+      })
+      .catch(err => {
+        console.error("Spotify logout failed :", err);
+        this.logoutResult = false;
       });
   }
 
@@ -62,6 +87,8 @@ export class HomePage implements OnInit, OnDestroy {
       .then(res => {
         this.connectionResult = true;
         this.disconnectionResult = undefined;
+        SpotifySDK.subscribeToPlayerState();
+        SpotifySDK.subscribeToPlayerContext();
       })
       .catch(err => {
         console.error("Spotify App Remote connection failed :", err);
